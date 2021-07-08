@@ -1,18 +1,21 @@
-﻿@model IEnumerable<LocalMotoAdsWebsite.Models.Make>
+﻿@model IEnumerable<LocalMotoAdsWebsite.Models.Model>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Makers</h1>
+<h1>Models</h1>
 
 <p>
-    <a asp-action="Create">Add new maker</a>
+    <a asp-action="Create">Add new model</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Make)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -22,6 +25,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Make.Name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
