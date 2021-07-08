@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace LocalMotoAdsWebsite
 {
@@ -27,6 +28,8 @@ namespace LocalMotoAdsWebsite
         {
             services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
         }
 
@@ -47,7 +50,7 @@ namespace LocalMotoAdsWebsite
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -55,6 +58,8 @@ namespace LocalMotoAdsWebsite
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
             });
         }
     }
