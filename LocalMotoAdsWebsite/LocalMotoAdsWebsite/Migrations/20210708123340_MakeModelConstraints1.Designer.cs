@@ -9,15 +9,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocalMotoAdsWebsite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210708112543_AddModelAndMakes")]
-    partial class AddModelAndMakes
+    [Migration("20210708123340_MakeModelConstraints1")]
+    partial class MakeModelConstraints1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("ProductVersion", "3.1.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("LocalMotoAdsWebsite.Models.Make", b =>
@@ -28,7 +28,9 @@ namespace LocalMotoAdsWebsite.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 
@@ -46,7 +48,9 @@ namespace LocalMotoAdsWebsite.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 
@@ -62,8 +66,6 @@ namespace LocalMotoAdsWebsite.Migrations
                         .HasForeignKey("MakeFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Make");
                 });
 #pragma warning restore 612, 618
         }

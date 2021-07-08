@@ -2,7 +2,7 @@
 
 namespace LocalMotoAdsWebsite.Migrations
 {
-    public partial class AddModelAndMakes : Migration
+    public partial class MakeModelConstraints1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,9 +10,9 @@ namespace LocalMotoAdsWebsite.Migrations
                 name: "Makes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -23,10 +23,10 @@ namespace LocalMotoAdsWebsite.Migrations
                 name: "Models",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MakeFK = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    MakeFK = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
