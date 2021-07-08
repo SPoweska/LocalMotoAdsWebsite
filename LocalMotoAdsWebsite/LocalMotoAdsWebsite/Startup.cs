@@ -30,6 +30,7 @@ namespace LocalMotoAdsWebsite
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
+            services.AddRazorPages();
 
         }
 
