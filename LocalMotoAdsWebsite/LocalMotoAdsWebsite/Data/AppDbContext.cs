@@ -19,6 +19,7 @@ namespace LocalMotoAdsWebsite.Data
         }
         public DbSet<Make> Makes { get; set; }
         public DbSet<Model> Models { get; set; }
+        public DbSet<Advert> Adverts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
