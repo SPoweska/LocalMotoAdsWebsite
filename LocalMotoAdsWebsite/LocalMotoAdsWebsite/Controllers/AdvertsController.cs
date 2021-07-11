@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LocalMotoAdsWebsite.Data;
 using LocalMotoAdsWebsite.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace LocalMotoAdsWebsite.Controllers
 {
     public class AdvertsController : Controller
     {
         private readonly AppDbContext _context;
+        private UserManager<IdentityUser> _userManager;
 
-        public AdvertsController(AppDbContext context)
+        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
         }
 
         // GET: Adverts
@@ -61,6 +64,8 @@ namespace LocalMotoAdsWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                var id = _userManager.GetUserId(User);
+                advert.UserId = id;
                 _context.Add(advert);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
