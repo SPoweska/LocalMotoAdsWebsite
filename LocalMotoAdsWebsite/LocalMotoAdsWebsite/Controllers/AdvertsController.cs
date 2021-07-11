@@ -11,19 +11,20 @@ using Microsoft.AspNetCore.Identity;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Extensions.Hosting.Internal;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 namespace LocalMotoAdsWebsite.Controllers
 {
     public class AdvertsController : Controller
     {
         private readonly AppDbContext _context;
         private UserManager<IdentityUser> _userManager;
-        private readonly HostingEnvironment _hostingEnvironment;
+        //private readonly HostingEnvironment _hostingEnvironment;
 
-        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager, HostingEnvironment hostingEnvironment)
+        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
-            _hostingEnvironment = hostingEnvironment;
+            //_hostingEnvironment = hostingEnvironment;
             _context = context;
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
         }
@@ -52,9 +53,9 @@ namespace LocalMotoAdsWebsite.Controllers
             }
 
             return View(advert);
-        }
-
+        }        
         // GET: Adverts/Create
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Create()
         {
             ViewData["ModelFK"] = new SelectList(_context.Models, "Id", "Name");
@@ -66,6 +67,7 @@ namespace LocalMotoAdsWebsite.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,UserId,Descritpion,VIN,Year,CarMileage,Price,ImagePath,ModelFK")] Advert advert)
         {
             if (ModelState.IsValid)
@@ -106,6 +108,8 @@ namespace LocalMotoAdsWebsite.Controllers
 
 
         // GET: Adverts/Edit/5
+        [Authorize(Roles = "User,Admin")]    
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -125,8 +129,10 @@ namespace LocalMotoAdsWebsite.Controllers
         // POST: Adverts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId,Descritpion,VIN,Year,CarMileage,Price,ImagePath,ModelFK")] Advert advert)
         {
             if (id != advert.Id)
@@ -159,6 +165,7 @@ namespace LocalMotoAdsWebsite.Controllers
         }
 
         // GET: Adverts/Delete/5
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -180,6 +187,7 @@ namespace LocalMotoAdsWebsite.Controllers
         // POST: Adverts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var advert = await _context.Adverts.FindAsync(id);

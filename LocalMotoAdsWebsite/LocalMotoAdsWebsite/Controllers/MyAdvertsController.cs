@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using LocalMotoAdsWebsite.Data;
 using LocalMotoAdsWebsite.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LocalMotoAdsWebsite.Controllers
 {
+    [Authorize(Roles = "User,Admin")]
+
     public class MyAdvertsController : Controller
     {
         private readonly AppDbContext _context;
@@ -26,13 +29,13 @@ namespace LocalMotoAdsWebsite.Controllers
         // GET: MyAdverts
         public async Task<IActionResult> Index()
         {
-            //TODO: Take adverts which current user id == UserID
+            //TODO: Take adverts which current user id == UserID            
             var id = _userManager.GetUserId(User);
             var appDbContext = _context.Adverts.Include(a => a.Model);
-            return View(await appDbContext.ToListAsync());
+            return View(await appDbContext.Where(x=>x.UserId.Equals(id)).ToListAsync());
         }
 
-        // GET: MyAdverts/Details/5
+        // GET: MyAdverts/Details/5        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,7 +54,7 @@ namespace LocalMotoAdsWebsite.Controllers
             return View(advert);
         }
 
-        // GET: MyAdverts/Edit/5
+        // GET: MyAdverts/Edit/5        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,7 +75,7 @@ namespace LocalMotoAdsWebsite.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]        
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId,Descritpion,VIN,Year,CarMileage,Price,ImagePath,ModelFK")] Advert advert)
         {
             if (id != advert.Id)
@@ -104,7 +107,7 @@ namespace LocalMotoAdsWebsite.Controllers
             return View(advert);
         }
 
-        // GET: MyAdverts/Delete/5
+        // GET: MyAdverts/Delete/5        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,7 +128,7 @@ namespace LocalMotoAdsWebsite.Controllers
 
         // POST: MyAdverts/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]        
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var advert = await _context.Adverts.FindAsync(id);
