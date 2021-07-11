@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using LocalMotoAdsWebsite.Data;
 using LocalMotoAdsWebsite.Models;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace LocalMotoAdsWebsite.Controllers
 {
@@ -15,9 +18,12 @@ namespace LocalMotoAdsWebsite.Controllers
     {
         private readonly AppDbContext _context;
         private UserManager<IdentityUser> _userManager;
+        private readonly HostingEnvironment _hostingEnvironment;
 
-        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager, HostingEnvironment hostingEnvironment)
         {
+            _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
             _context = context;
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
         }
@@ -66,13 +72,38 @@ namespace LocalMotoAdsWebsite.Controllers
             {
                 var id = _userManager.GetUserId(User);
                 advert.UserId = id;
+                //string wwrootPath = _hostingEnvironment.ContentRootPath;
                 _context.Add(advert);
+                //var files = HttpContext.Request.Form.Files;
+                //if (files.Count != 0)
+                //{
+                //    //Extract the extension of submitted file
+                //    var Extension = Path.GetExtension(files[0].FileName);
+
+                //    //Create the relative image path to be saved in database table 
+                //    var RelativeImagePath = Image.ImagePath + Advert.Id + Extension;
+
+                //    //Create absolute image path to upload the physical file on server
+                //    var AbsImagePath = Path.Combine(wwrootPath, RelativeImagePath);
+                    
+
+                //    //Upload the file on server using Absolute Path
+                //    using (var filestream = new FileStream(AbsImagePath, FileMode.Create))
+                //    {
+                //        files[0].CopyTo(filestream);
+                //    }
+
+                //    //Set the path in database
+                //    advert.ImagePath = RelativeImagePath;
+                //}
+               
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ModelFK"] = new SelectList(_context.Models, "Id", "Name", advert.ModelFK);
             return View(advert);
         }
+
 
         // GET: Adverts/Edit/5
         public async Task<IActionResult> Edit(int? id)
