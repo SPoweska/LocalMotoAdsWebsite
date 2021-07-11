@@ -9,9 +9,12 @@
 <p>
     <h1>My Ads Page</h1>
 </p>
-<table class="table">
+<table class="table table-striped table-light">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -31,9 +34,6 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Model)
             </th>
             <th></th>
@@ -42,6 +42,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImagePath)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -59,9 +62,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Model.Name)
