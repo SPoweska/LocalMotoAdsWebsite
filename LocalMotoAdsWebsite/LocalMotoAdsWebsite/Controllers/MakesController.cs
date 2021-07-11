@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LocalMotoAdsWebsite.Data;
 using LocalMotoAdsWebsite.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LocalMotoAdsWebsite.Controllers
 {
+    [Authorize(Roles="Admin")]
     public class MakesController : Controller
     {
         private readonly AppDbContext _context;

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using LocalMotoAdsWebsite.Data;
 using LocalMotoAdsWebsite.Models;
 using LocalMotoAdsWebsite.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LocalMotoAdsWebsite.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ModelsController : Controller
     {
         private readonly AppDbContext _context;
