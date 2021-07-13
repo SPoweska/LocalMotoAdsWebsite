@@ -30,12 +30,10 @@ namespace LocalMotoAdsWebsite.Controllers
         public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             var id = _userManager.GetUserId(User);
-            var appDbContext = _context.Adverts.Include(a => a.Model);
-            return View(await appDbContext.Where(x => x.UserId.Equals(id)).ToListAsync());
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
-            var adverts = from a in _context.Adverts
+            var adverts = from a in _context.Adverts.Include(a => a.Model)
                           select a;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -59,8 +57,7 @@ namespace LocalMotoAdsWebsite.Controllers
                     break;
             }
 
-            //var appDbContext = _context.Adverts.Include(a => a.Model);
-            return View(await adverts.ToListAsync());
+            return View(await adverts.Where(x => x.UserId.Equals(id)).ToListAsync());
         }
 
         // GET: MyAdverts/Details/5        
