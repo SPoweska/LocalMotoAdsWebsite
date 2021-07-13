@@ -12,21 +12,24 @@ using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using LocalMotoAdsWebsite.Models.ViewModels;
+
 namespace LocalMotoAdsWebsite.Controllers
 {
     public class AdvertsController : Controller
     {
         private readonly AppDbContext _context;
         private UserManager<IdentityUser> _userManager;
-        //private readonly HostingEnvironment _hostingEnvironment;
 
-        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager)
+        private readonly IWebHostEnvironment WebHostEnvironment;
+
+        public AdvertsController(AppDbContext context, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
-            _userManager = userManager;
-            //_hostingEnvironment = hostingEnvironment;
+            _userManager = userManager;            
             _context = context;
-            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            WebHostEnvironment = webHostEnvironment;
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;            
         }
 
         // GET: Adverts
@@ -68,42 +71,40 @@ namespace LocalMotoAdsWebsite.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> Create([Bind("Id,Name,UserId,Descritpion,VIN,Year,CarMileage,Price,ImagePath,ModelFK")] Advert advert)
+        public async Task<IActionResult> Create(AdvertViewModel vm, Advert advert)
         {
+            string stringFileName = UploadFile(vm);
             if (ModelState.IsValid)
             {
                 var id = _userManager.GetUserId(User);
                 advert.UserId = id;
-                //string wwrootPath = _hostingEnvironment.ContentRootPath;
+                advert.ImagePath = stringFileName;
+                
                 _context.Add(advert);
-                //var files = HttpContext.Request.Form.Files;
-                //if (files.Count != 0)
-                //{
-                //    //Extract the extension of submitted file
-                //    var Extension = Path.GetExtension(files[0].FileName);
-
-                //    //Create the relative image path to be saved in database table 
-                //    var RelativeImagePath = Image.ImagePath + Advert.Id + Extension;
-
-                //    //Create absolute image path to upload the physical file on server
-                //    var AbsImagePath = Path.Combine(wwrootPath, RelativeImagePath);
-                    
-
-                //    //Upload the file on server using Absolute Path
-                //    using (var filestream = new FileStream(AbsImagePath, FileMode.Create))
-                //    {
-                //        files[0].CopyTo(filestream);
-                //    }
-
-                //    //Set the path in database
-                //    advert.ImagePath = RelativeImagePath;
-                //}
+                
                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ModelFK"] = new SelectList(_context.Models, "Id", "Name", advert.ModelFK);
             return View(advert);
+        }
+
+        private string UploadFile(AdvertViewModel vm)
+        {
+            string file = null;
+            if (vm.ImagePath != null)
+            {
+                string uploadDir = Path.Combine(WebHostEnvironment.WebRootPath, "Images");
+                file = Guid.NewGuid().ToString() + "-" + vm.ImagePath.FileName;
+                string filePath = Path.Combine(uploadDir, file);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    vm.ImagePath.CopyTo(fileStream);
+                }
+
+            }
+            return file;
         }
 
 
@@ -133,17 +134,18 @@ namespace LocalMotoAdsWebsite.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId,Descritpion,VIN,Year,CarMileage,Price,ImagePath,ModelFK")] Advert advert)
+        public async Task<IActionResult> Edit(int id, AdvertViewModel vm, Advert advert)
         {
             if (id != advert.Id)
             {
                 return NotFound();
             }
-
+            string stringFileName = UploadFile(vm);
             if (ModelState.IsValid)
             {
                 try
                 {
+                    advert.ImagePath = stringFileName;
                     _context.Update(advert);
                     await _context.SaveChangesAsync();
                 }

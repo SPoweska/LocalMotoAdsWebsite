@@ -45,7 +45,7 @@
                     {
                         <tr>
                             <td>
-                                <img src="@Html.DisplayFor(modelItem => item.ImagePath)" width="150" height="100" />
+                                <img src="~/Images/@item.ImagePath" width="150" height="100" asp-append-version="true" />
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Name)
