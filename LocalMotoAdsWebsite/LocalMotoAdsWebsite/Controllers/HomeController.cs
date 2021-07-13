@@ -1,4 +1,6 @@
-﻿using LocalMotoAdsWebsite.Models;
+﻿using LocalMotoAdsWebsite.Data;
+using LocalMotoAdsWebsite.Models;
+using LocalMotoAdsWebsite.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,20 +13,24 @@ namespace LocalMotoAdsWebsite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IMakeRepository makeRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IMakeRepository makeRepository)
         {
-            _logger = logger;
+            this.makeRepository = makeRepository;
         }
 
         public IActionResult Index()
         {
+            var result = makeRepository.GetAllMakes();
+            ViewData["make"] = result;
             return View();
         }
 
         public IActionResult Privacy()
         {
+            var result = makeRepository.GetMake(1);
+            ViewData["make"] = result;
             return View();
         }
 
