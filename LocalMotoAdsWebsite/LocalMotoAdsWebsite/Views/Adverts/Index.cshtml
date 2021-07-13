@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-            <h1>Index</h1>
+            <h1>All Adverts</h1>
 
             <p>
                 <a asp-action="Create">Create New</a>
@@ -50,38 +50,44 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
-                                <img src="~/Images/@item.ImagePath" width="150" height="100" asp-append-version="true" />
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Descritpion)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.VIN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Year)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CarMileage)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Price)
-                            </td>
+                    <tr>
+                        <td>
+                            <img src="~/Images/@item.ImagePath" width="150" height="100" asp-append-version="true" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descritpion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VIN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Year)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CarMileage)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Model.Name)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            </td>
-                        </tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model.Name)
+                        </td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin")) 
+                            { 
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                            }
+                        }
+                    </tr>
                     }
                 </tbody>
             </table>
