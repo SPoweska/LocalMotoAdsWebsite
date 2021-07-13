@@ -9,6 +9,8 @@
 <div>
     <h4>Advert</h4>
     <hr />
+    <img src="~/Images/@Url.Content(Model.ImagePath)" width="600" height="400" asp-append-version="true" />
+    <p></p>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -55,10 +57,6 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImagePath)
         </dt>
-        <dd>
-            <img src="~/Images/@Url.Content(Model.ImagePath)" width="150" height="100" asp-append-version="true" />
-        </dd>
-
     </dl>
 </div>
 <div>
