@@ -27,12 +27,36 @@ namespace LocalMotoAdsWebsite.Controllers
         }
 
         // GET: MyAdverts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            //TODO: Take adverts which current user id == UserID            
-            var id = _userManager.GetUserId(User);
-            var appDbContext = _context.Adverts.Include(a => a.Model);
-            return View(await appDbContext.Where(x=>x.UserId.Equals(id)).ToListAsync());
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
+            var adverts = from a in _context.Adverts
+                          select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                adverts = adverts.Where(s => s.Name.Contains(searchString)
+                                       || s.Descritpion.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    adverts = adverts.OrderByDescending(s => s.Price);
+                    break;
+                case "price_asc":
+                    adverts = adverts.OrderBy(s => s.Price);
+                    break;
+                case "name_desc":
+                    adverts = adverts.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    adverts = adverts.OrderBy(s => s.Name);
+                    break;
+            }
+
+            //var appDbContext = _context.Adverts.Include(a => a.Model);
+            return View(await adverts.ToListAsync());
         }
 
         // GET: MyAdverts/Details/5        
